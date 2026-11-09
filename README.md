@@ -419,13 +419,13 @@ The suite uses fakes, so it needs no GPU, Qdrant or network. CI runs it on every
 
 ## Roadmap
 
-- [x] Reranker (Cohere, local cross-encoder, BM25 fallback)
-- [x] Query classifier (route to judgment/act/CAD automatically)
-- [x] Evaluation metrics and ablation harness
-- [x] More SC judgments (streaming, parallel, resumable pipeline for 50,000+)
-- [x] High Court judgments
-- [x] Multilingual support (Hindi, Marathi, Tamil + other Indian scripts via translation)
-- [x] Deploy to cloud (Docker, Render, Railway, docker-compose)
+- ✅ Reranker (Cohere, local cross-encoder, BM25 fallback)
+- ✅ Query classifier (route to judgment/act/CAD automatically)
+- ✅ Evaluation metrics and ablation harness
+- ✅ More SC judgments (streaming, parallel, resumable pipeline for 50,000+)
+- ✅ High Court judgments
+- ✅ Multilingual support (Hindi, Marathi, Tamil + other Indian scripts via translation)
+- ✅ Deploy to cloud (Docker, Render, Railway, docker-compose)
 
 * * *
 
