@@ -201,7 +201,7 @@ compilation: check its terms and verify text against the official gazette.
 Embed all scraped data and store in Qdrant:
 
 ```bash
-py -3.12 embeddings/batch_ingest.py
+py -3.12 embeddings/batch_ingestion.py
 ```
 
 This will:
