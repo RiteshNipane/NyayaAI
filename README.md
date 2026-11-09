@@ -1,6 +1,6 @@
-# NyayaAI — Indian Legal Intelligence RAG System
+﻿# NyayaAI â€” Indian Legal Intelligence RAG System
 
-A production-grade Retrieval-Augmented Generation (RAG) system for Indian law. Ask questions about the Indian Constitution, Supreme Court judgments, Acts of Parliament, and Constituent Assembly Debates — and get structured, cited answers powered by AI.
+A production-grade Retrieval-Augmented Generation (RAG) system for Indian law. Ask questions about the Indian Constitution, Supreme Court judgments, Acts of Parliament, and Constituent Assembly Debates â€” and get structured, cited answers powered by AI.
 
 ![NyayaAI](https://img.shields.io/badge/NyayaAI-Indian%20Legal%20RAG-gold)
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
@@ -21,12 +21,27 @@ NyayaAI answers legal queries by:
 
 ---
 
+## Demo
+
+| Home | Answer with citations |
+|---|---|
+| ![Home](docs/images/screenshot-home.png) | ![Answer](docs/images/screenshot-answer.png) |
+
+| Source passages panel | Search settings |
+|---|---|
+| ![Sources](docs/images/screenshot-sources.png) | ![Settings](docs/images/screenshot-settings.png) |
+
+Every answer cites the exact passages it was built from, so you can read the source yourself. Search settings let you change the answer model, number of passages, question language, re-ranking and automatic source selection.
+
+---
+
 ## Data Sources
 
 | Source | Content | Volume |
 |--------|---------|--------|
-| AWS Open Data | Supreme Court judgments 1950–2025 | 150+ judgments |
-| Devgan.in | BNS, BNSS, BSA, IPC, CrPC sections | 1,500+ sections |
+| AWS Open Data | Supreme Court judgments 1950â€“2025 | 150+ judgments |
+| Devgan.in | BNS, CrPC sections (BNSS/BSA/IPC pages are often unavailable there) | section by section |
+| courtbook.in | BNSS, BSA sections (automatic fallback when Devgan fails) | section by section |
 | legislative.gov.in | Constitution of India, RTI, IT Act, POCSO | 8 Acts |
 | constitutionofindia.net | Constituent Assembly Debates (12 volumes) | 60+ sessions |
 
@@ -36,38 +51,38 @@ NyayaAI answers legal queries by:
 
 ```
 Indian-legal-RAG/
-├── api/main.py                    # FastAPI backend (thin; logic lives in retrieval/)
-├── retrieval/
-│   ├── query_classifier.py        # rule-based routing: act / judgment / cad
-│   ├── reranker.py                # Cohere, cross-encoder, BM25 + fallback chain
-│   ├── pipeline.py                # translate → classify → retrieve → rerank
-│   ├── multilingual.py            # script detection + LLM query translation
-│   ├── generation.py              # prompt building + answer generation
-│   ├── adapters.py                # Qdrant / sentence-transformers / OpenRouter wiring
-│   └── types.py                   # shared types, source labels
-├── evaluation/
-│   ├── metrics.py                 # hit@k, P@k, pooled recall@k, MRR, nDCG@k
-│   ├── generation_eval.py         # citation checks, keyword coverage, LLM judge
-│   ├── run_eval.py                # ablation runner + JSON/Markdown reports
-│   └── golden_set.jsonl           # 28 starter queries (statute/constitution/case law/CAD/multilingual)
-├── embeddings/batch_ingestion.py  # GPU embedding + Qdrant upload (idempotent)
-├── ingestion/
-│   ├── scraper/                   # SC (streaming, parallel), High Courts, Devgan, Legislative, CAD
-│   ├── cleaner/PDF_text_extracter.py
-│   └── run_all_scraper.py         # mvp | full | scale
-├── frontend/index.html            # chat UI (API base configurable)
-├── tests/                         # pytest suite (no GPU / Qdrant / network needed)
-├── Dockerfile, docker-compose.yml, render.yaml, railway.json
-├── .github/workflows/ci.yml
-├── .env.example
-└── requirements.txt, requirements-api.txt
+â”œâ”€â”€ api/main.py                    # FastAPI backend (thin; logic lives in retrieval/)
+â”œâ”€â”€ retrieval/
+â”‚   â”œâ”€â”€ query_classifier.py        # rule-based routing: act / judgment / cad
+â”‚   â”œâ”€â”€ reranker.py                # Cohere, cross-encoder, BM25 + fallback chain
+â”‚   â”œâ”€â”€ pipeline.py                # translate â†’ classify â†’ retrieve â†’ rerank
+â”‚   â”œâ”€â”€ multilingual.py            # script detection + LLM query translation
+â”‚   â”œâ”€â”€ generation.py              # prompt building + answer generation
+â”‚   â”œâ”€â”€ adapters.py                # Qdrant / sentence-transformers / OpenRouter wiring
+â”‚   â””â”€â”€ types.py                   # shared types, source labels
+â”œâ”€â”€ evaluation/
+â”‚   â”œâ”€â”€ metrics.py                 # hit@k, P@k, pooled recall@k, MRR, nDCG@k
+â”‚   â”œâ”€â”€ generation_eval.py         # citation checks, keyword coverage, LLM judge
+â”‚   â”œâ”€â”€ run_eval.py                # ablation runner + JSON/Markdown reports
+â”‚   â””â”€â”€ golden_set.jsonl           # 28 starter queries (statute/constitution/case law/CAD/multilingual)
+â”œâ”€â”€ embeddings/batch_ingestion.py  # GPU embedding + Qdrant upload (idempotent)
+â”œâ”€â”€ ingestion/
+â”‚   â”œâ”€â”€ scraper/                   # SC (+ sc_metadata, backfill), High Courts, Devgan, courtbook, Legislative, CAD
+â”‚   â”œâ”€â”€ cleaner/PDF_text_extracter.py, split_act_pdf.py   # PDF -> per-section records
+â”‚   â””â”€â”€ run_all_scraper.py         # mvp | full | scale
+â”œâ”€â”€ frontend/index.html            # chat UI (API base configurable)
+â”œâ”€â”€ tests/                         # pytest suite (no GPU / Qdrant / network needed)
+â”œâ”€â”€ Dockerfile, docker-compose.yml, render.yaml, railway.json
+â”œâ”€â”€ .github/workflows/ci.yml
+â”œâ”€â”€ .env.example
+â””â”€â”€ requirements.txt, requirements-api.txt
 ```
 
 * * *
 
 ## Prerequisites
 
-- **Python 3.12.x** (not 3.13 or 3.14 — PyTorch requires 3.12)
+- **Python 3.12.x** (not 3.13 or 3.14 â€” PyTorch requires 3.12)
   - Download: https://python.org/downloads/release/python-31210/
 - **Docker Desktop** (for Qdrant vector database)
   - Download: https://docker.com/products/docker-desktop
@@ -151,6 +166,34 @@ py -3.12 ingestion/scraper/highcourt_scraper.py --courts 27_1 7_26 --years 2023-
 py -3.12 ingestion/scraper/highcourt_scraper.py --list-courts
 ```
 
+**If a source fails**
+
+```bash
+# Why is Devgan failing? Prints status, redirects and the start of the body
+py -3.12 ingestion/scraper/Devgan_scraper.py --probe bnss 1
+
+# Check what the courtbook fallback extracts from one page (before a full run)
+py -3.12 ingestion/scraper/courtbook_scraper.py --probe bnss 1
+
+# Give already-downloaded SC judgments real case titles (see what changes first)
+py -3.12 ingestion/scraper/backfill_sc_metadata.py --years 2022-2024 --dry-run
+py -3.12 ingestion/scraper/backfill_sc_metadata.py --years 2022-2024
+```
+
+**Manual route (when a website won't serve an Act)**: download the official PDF, then split it into sections.
+
+```bash
+# Put PDFs OUTSIDE data/raw/acts (that folder's PDFs are also ingested whole)
+#   BSA : https://www.indiacode.nic.in/bitstream/123456789/20063/1/aa202347.pdf
+#   BNSS / IPC : indiacode.nic.in -> search the Act (BNSS = Act ID 2023-46, IPC = 186045) -> download PDF
+py -3.12 ingestion/cleaner/split_act_pdf.py --pdf data/manual_pdfs/bsa.pdf --act bsa --dry-run   # check coverage
+py -3.12 ingestion/cleaner/split_act_pdf.py --pdf data/manual_pdfs/bsa.pdf --act bsa             # writes data/raw/acts/bsa_manual.json
+```
+
+The Acts scraper stops after 15 consecutive failures instead of grinding through every section, and
+`run_all_scraper.py` prints a coverage table (âœ“/âœ— per Act). courtbook.in is a third-party
+compilation: check its terms and verify text against the official gazette.
+
 ---
 
 ## Embedding & Ingestion
@@ -158,7 +201,7 @@ py -3.12 ingestion/scraper/highcourt_scraper.py --list-courts
 Embed all scraped data and store in Qdrant:
 
 ```bash
-py -3.12 embeddings/batch_ingest.py
+py -3.12 embeddings/batch_ingestion.py
 ```
 
 This will:
@@ -179,9 +222,9 @@ py -3.12 api/main.py
 
 API runs at `http://localhost:8000`
 
-- `GET /health` — Check status and vector count
-- `POST /query` — Query the RAG system
-- `GET /docs` — Interactive Swagger UI
+- `GET /health` â€” Check status and vector count
+- `POST /query` â€” Query the RAG system
+- `GET /docs` â€” Interactive Swagger UI
 
 ### Open the Frontend
 
@@ -208,7 +251,7 @@ Response:
   "sources": [
     {
       "doc_type": "act",
-      "title": "BNS, Section 101 — Punishment for murder",
+      "title": "BNS, Section 101 â€” Punishment for murder",
       "score": 0.8923
     }
   ],
@@ -250,27 +293,11 @@ pydantic
 
 ## Architecture
 
-```
-User Query (any supported language)
-    │
-    ▼
-Language detection ─► LLM translation to English (non-English only)
-    │
-    ▼
-Query classifier ─► doc_type routing (act / judgment / cad), widens if results are thin
-    │
-    ▼
-Embedding model (all-MiniLM-L6-v2, configurable) ─► Qdrant, top CANDIDATE_K (30)
-    │
-    ▼
-Reranker (Cohere → local cross-encoder → BM25 fallback) ─► top_k (8)
-    │
-    ▼
-LLM generation via OpenRouter (answers in the user's language)
-    │
-    ▼
-Structured Legal Answer + Cited Sources
-```
+![NyayaAI System Architecture](docs/images/architecture.png)
+
+### Query flow
+
+![Query Flow](docs/images/query-flow.png)
 
 ### Reranker
 
@@ -322,6 +349,62 @@ chunk counts as relevant if it matches any of them. Recall and nDCG are pooled a
 relevant chunks found in the dense candidate pool, which is what a reranker can change.
 `evaluation/golden_set.jsonl` is a starter set: **extend it with queries and matchers for
 the corpus you actually ingested** before trusting absolute numbers.
+
+### Results
+
+Evaluated on the **28-query golden set** (statute, case law, constitution, CAD, multilingual) with a candidate pool of 30 and k âˆˆ {1, 3, 5, 10}. Retrieval eval finished in 11.3 s. Report generated 2026-11-09.
+
+**Query classifier routing accuracy: 1.000 (28/28)**
+
+#### Retrieval (headline k = 5)
+
+| Variant | Pool hit | Hit@5 | P@5 | R@5 | MRR@5 | nDCG@5 | p50 (ms) | p95 (ms) |
+|---|---|---|---|---|---|---|---|---|
+| baseline | 0.679 | 0.500 | 0.179 | 0.504 | 0.292 | 0.275 | 18.8 | 1078.5 |
+| rerank | 0.679 | 0.571 | 0.250 | 0.601 | 0.516 | 0.460 | 65.0 | 113.3 |
+| route | 0.679 | 0.500 | 0.200 | 0.524 | 0.310 | 0.301 | 17.6 | 26.2 |
+| **rerank + route** | 0.679 | **0.571** | **0.257** | **0.614** | **0.516** | **0.466** | 66.8 | 143.0 |
+
+#### Change vs baseline (k = 5)
+
+| Variant | Î” Hit@5 | Î” MRR@5 | Î” nDCG@5 |
+|---|---|---|---|
+| rerank | +0.071 | +0.224 | +0.184 |
+| route | +0.000 | +0.018 | +0.026 |
+| rerank + route | +0.071 | +0.224 | +0.191 |
+
+#### nDCG and recall across k
+
+| Variant | nDCG@1 | nDCG@3 | nDCG@5 | nDCG@10 | R@1 | R@3 | R@5 | R@10 |
+|---|---|---|---|---|---|---|---|---|
+| baseline | 0.179 | 0.238 | 0.275 | 0.311 | 0.092 | 0.354 | 0.504 | 0.652 |
+| rerank | 0.500 | 0.443 | 0.460 | 0.483 | 0.401 | 0.490 | 0.601 | 0.724 |
+| route | 0.214 | 0.266 | 0.301 | 0.340 | 0.105 | 0.367 | 0.524 | 0.694 |
+| rerank + route | 0.500 | 0.443 | 0.466 | 0.484 | 0.401 | 0.490 | 0.614 | 0.724 |
+
+#### nDCG@5 by category
+
+| Category | baseline | rerank | route | rerank + route |
+|---|---|---|---|---|
+| cad | 0.000 | 0.000 | 0.000 | 0.000 |
+| case_law | 0.586 | 0.910 | 0.767 | 0.956 |
+| constitution | 0.266 | 0.288 | 0.266 | 0.288 |
+| multilingual | 0.483 | 1.000 | 0.483 | 1.000 |
+| statute | 0.198 | 0.340 | 0.198 | 0.340 |
+
+#### Key takeaways
+
+- **Re-ranking is the biggest win:** MRR@5 rises from 0.292 to 0.516 and nDCG@1 from 0.179 to 0.500, so the right passage lands at the top far more often.
+- **Routing adds a small gain on its own** (+0.026 nDCG@5) and a little more on top of re-ranking (+0.191 total). The classifier itself is 28/28 accurate.
+- **Latency cost is modest:** re-ranking adds roughly 45 ms at p50, and p95 (143 ms) is well below the baseline's 1078 ms.
+- **Strongest categories:** case law and multilingual queries (nDCG@5 of 0.956 and 1.000 with rerank + route).
+
+#### Limitations
+
+- The golden set is small (28 queries), so treat the numbers as indicative, not definitive.
+- Pool hit is 0.679, so about 32% of queries have no relevant chunk in the top 30 candidates, which caps what re-ranking can fix. Improving first-stage recall (chunking, embedding model, hybrid search) is the next step.
+- CAD queries score 0.000 across all variants, and statute and constitution are weak (nDCG@5 â‰¤ 0.34).
+- Recall and nDCG are *pooled* (relevant chunks surfaced by any variant); see `evaluation/metrics.py`.
 
 * * *
 
@@ -383,4 +466,4 @@ NyayaAI provides legal **information**, not legal **advice**. Always consult a q
 
 ## License
 
-MIT License — free to use, modify, and distribute.
+MIT License â€” free to use, modify, and distribute.
